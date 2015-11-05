@@ -148,41 +148,6 @@ class ThrustAnalyzer : public edm::EDAnalyzer{
   map< string, TH1D* > histos1D;  
   map< string, TH2D* > histos2D;
 
-  //plane class
-  class Plane{
-  public:
-    TVector3 v1, v2, proj, u1, u2;
-    Double_t scalar1, scalar2, mag1, mag2; 
-    Plane(TVector3) { }
-
-    //returns a projection onto the 2D plane 
-    TVector3 Projection(TVector3 jaxis){
-      //Find the projection of a jet onto this subspace
-
-      if(v1.Mag() == 0) { scalar1 = 0; }   else { scalar1 = jaxis.Dot(v1)/(v1.Dot(v1)); } 
-      if(v2.Mag() == 0) { scalar2 = 0; }   else { scalar2 = jaxis.Dot(v2)/(v2.Dot(v2)); } 
-      v1 = scalar1*v1;
-      v2 = scalar2*v2;
-      proj(0) = v1(0) + v2(0);
-      proj(1) = v1(1) + v2(1);
-      proj(2) = v1(2) + v2(2); 
-    
-      return proj;
-    }//end of projection
-  };
-  
-  //plane class constructor
-  Plane::Plane(TVector3 nT){
-    //Use TVector3 to find an orthogonal vector and a second vector orthogonal to the first and nT
-    v1 = nT.Orthogonal();  v2 = nT.Cross(v1);
-
-    //Normalize, checking for 0 length axes
-    if ((v1(0) == 0) && (v1(1) == 0) && (v1(2) == 0)){  v1(0) = 0;    v1(1) = 0;    v1(2) = 0; }
-    else { mag1 = v1.Mag();   v1(0) = v1(0)/mag1;    v1(1) = v1(1)/mag1;    v1(2) = v1(2)/mag1; } 
-    if ((v2(0) == 0) && (v2(1) == 0) && (v2(2) == 0)){  v2(0) = 0;    v2(1) = 0;    v2(2) = 0; } 
-    else { mag2 = v2.Mag();   v2(0) = v2(0)/mag2;    v2(1) = v2(1)/mag2;    v2(2) = v2(2)/mag2; }
-  }//end plane constructor
-
   //Function to normalize a vector
   static TVector3 Norm(TVector3 v){
     if ( (v(0) == 0) && (v(1) == 0) && (v(2) == 0)) return v; 
@@ -196,8 +161,43 @@ class ThrustAnalyzer : public edm::EDAnalyzer{
     if(dphi > M_PI )dphi -= 2*M_PI;
     return dphi;
   }
-
   
 };
+
+//plane class
+class Dplane{
+ public:
+  TVector3 v1, v2, proj, u1, u2;
+  Double_t scalar1, scalar2, mag1, mag2; 
+  Dplane(TVector3);
+
+  //returns a projection onto the 2D plane 
+  TVector3 Projection(TVector3 jaxis){
+    //Find the projection of a jet onto this subspace
+
+    if(v1.Mag() == 0) { scalar1 = 0; }   else { scalar1 = jaxis.Dot(v1)/(v1.Dot(v1)); } 
+    if(v2.Mag() == 0) { scalar2 = 0; }   else { scalar2 = jaxis.Dot(v2)/(v2.Dot(v2)); } 
+    v1 = scalar1*v1;
+    v2 = scalar2*v2;
+    proj(0) = v1(0) + v2(0);
+    proj(1) = v1(1) + v2(1);
+    proj(2) = v1(2) + v2(2); 
+    
+    return proj;
+  }//end of projection
+};
+  
+//plane class constructor
+Dplane::Dplane(TVector3 nT){
+  //Use TVector3 to find an orthogonal vector and a second vector orthogonal to the first and nT
+  v1 = nT.Orthogonal();  v2 = nT.Cross(v1);
+
+  //Normalize, checking for 0 length axes
+  if ((v1(0) == 0) && (v1(1) == 0) && (v1(2) == 0)){  v1(0) = 0;    v1(1) = 0;    v1(2) = 0; }
+  else { mag1 = v1.Mag();   v1(0) = v1(0)/mag1;    v1(1) = v1(1)/mag1;    v1(2) = v1(2)/mag1; } 
+  if ((v2(0) == 0) && (v2(1) == 0) && (v2(2) == 0)){  v2(0) = 0;    v2(1) = 0;    v2(2) = 0; } 
+  else { mag2 = v2.Mag();   v2(0) = v2(0)/mag2;    v2(1) = v2(1)/mag2;    v2(2) = v2(2)/mag2; }
+}//end plane constructor
+
 
 #endif

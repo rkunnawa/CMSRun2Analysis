@@ -180,10 +180,10 @@ void ThrustAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     }
   }
 
-  bool isDijetEvent = false;
-  // apply dijet selection
-  if(recoJets[0].pt() > mRecoJetPtThreshold && recoJets[1].pt() > mReco_SubJetPtThreshold) 
-    isDijetEvent = true;
+  // bool isDijetEvent = false;
+  // //apply dijet selection
+  // if(recoJets[0].pt() > mRecoJetPtThreshold && recoJets[1].pt() > mReco_SubJetPtThreshold) 
+  //   isDijetEvent = true;
 
   // if(!isDijetEvent) return;
 
@@ -199,7 +199,7 @@ void ThrustAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   Double_t thrust_min_max = 0;
   TVector3 max_thrust_axis;
   TVector3 p3Norm;
-  Int_t max_nref;
+  // Int_t max_nref;
 
   
   // get the pt vector for each event which passes you jet selections based on pT and eta
@@ -329,7 +329,7 @@ void ThrustAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       max_thrust_axis = nT;
       //max_eta = temp_eta;
       //max_phi = temp_phi;
-      max_nref = naxis;
+      //max_nref = naxis;
 	  
     }
     if(debug) cout<< "max thrust = " << thrust_max << endl;
@@ -365,7 +365,7 @@ void ThrustAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   //Begin code to select the Thrust Major and Minor axes
       
   //define the plane perpendicular to this axis in order to calculate Tmaj and Tmin
-  Plane* perp = new Plane(max_thrust_axis);
+  Dplane* perp = new Dplane(max_thrust_axis);
       
   //reset maximum values for new axis test
   thrust_maj_max = 0;   thrust_min_max = 0; 
